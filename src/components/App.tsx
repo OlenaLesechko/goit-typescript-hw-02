@@ -130,15 +130,15 @@ export default function App() {
     async function getImg() {
       try {
         setLoading(true);
-        setError(null); // Change to null instead of false
+        setError(null); 
 
         const fetchedImg = await fetchImg(searchQuery, page);
         setImages((prevImages: Image[] | null )=> {
-          return [...(prevImages || []), ...fetchedImg]; // Added null check
+          return [...(prevImages || []), ...fetchedImg]; 
         });
         toast.success('Successfully');
       } catch (error) {
-        setError('An error occurred while fetching images.'); // Set error message
+        setError('An error occurred while fetching images.'); 
       } finally {
         setLoading(false);
       }
@@ -168,7 +168,7 @@ export default function App() {
   return (
     <div>
       <SearchBar onSearch={handleSearch} />
-      {error && <ErrorMessage message={error} />} {/* Pass error message to ErrorMessage component */}
+      {error && <ErrorMessage message={error} />} 
       <Toaster position="bottom-center" />
 
       {images !== null && images.length > 0 && ( 
@@ -188,7 +188,7 @@ export default function App() {
         {loading && <Loader />}
       </div>
 
-      {images !== null && images.length > 0 && <LoadMoreBtn onClick={handleLoadMore} />} {/* Check if images is not null before accessing its length */}
+      {images !== null && images.length > 0 && <LoadMoreBtn onClick={handleLoadMore} />} 
 
       {modalContent !== null && (
         <ImageModal
