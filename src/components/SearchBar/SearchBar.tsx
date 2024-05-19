@@ -1,5 +1,5 @@
 import css from './SearchBar.module.css';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { FiSearch } from 'react-icons/fi';
 import toast from 'react-hot-toast';
@@ -18,14 +18,14 @@ const searchBarSchema = Yup.object().shape({
 
 const SearchBar: FC<SearchBarProps> = ({ onSearch }) => {
 
-    const notify = (message: string): void => toast.error(message);
+    const notify = (message: string): string => toast.error(message);
 
     return (
         <header className={css.header}>
         <Formik
             initialValues={{ query: '' }}
             validationSchema={searchBarSchema}
-            onSubmit={(values, actions) => {
+            onSubmit={(values: { query: string }, actions: FormikHelpers<{ query: string }>) : any => {
             if (!values.query.trim()) {
                 return notify('Can not be empty');
             }
@@ -47,7 +47,7 @@ const SearchBar: FC<SearchBarProps> = ({ onSearch }) => {
                 <FiSearch size="16px" />
                 </button>
             </div>
-            <ErrorMessage className={css.error} name="query" as="span" />
+            <ErrorMessage className={css.error} name="query" />
             </Form>
         </Formik>
         </header>

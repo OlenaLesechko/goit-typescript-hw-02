@@ -1,4 +1,4 @@
-import './App.css';
+/* import './App.css';
 import SearchBar from './SearchBar/SearchBar';
 import { useEffect, useState } from 'react';
 import ImageGallery from './ImageGallery/ImageGallery';
@@ -9,15 +9,17 @@ import ImageModal from './ImageModal/ImageModal';
 import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
 import Loader from './Loader/Loader';
 import ErrorMessage from './ErrorMessage/ErrorMessage';
+import { Image, ServerResponse } from "../Types";
+import { string } from 'yup';
 
 export default function App() {
-  const [images, setImages] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
-  const [page, setPage] = useState(1);
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [modalContent, setModalContent] = useState({});
+  const [images, setImages] = useState<Image[] | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<Image | null>(null);
 
   useEffect(() => {
     if (searchQuery === '') {
@@ -30,7 +32,7 @@ export default function App() {
         setError(false);
 
         const fetchedImg = await fetchImg(searchQuery, page);
-        setImages(prevImages => {
+        setImages((prevImages: Image[] | null )=> {
           return [...prevImages, ...fetchedImg];
         });
         toast.success('Successfully');
@@ -43,32 +45,32 @@ export default function App() {
     getImg();
   }, [searchQuery, page]);
 
-  const handleSearch = newQuery => {
+  const handleSearch = (newQuery: string) : void => {
     setSearchQuery(newQuery);
     setPage(1);
     setImages([]);
   };
 
-  const handleLoadMore = () => {
+  const handleLoadMore = () : void => {
     setPage(page + 1);
   };
 
-  const handleOpenModal = value => {
+  const handleOpenModal = (value: Image) => {
     setModalIsOpen(true);
     setModalContent(value);
   };
 
-  const handleCloseModal = () => {
+  const handleCloseModal = () : void => {
     setModalIsOpen(false);
   };
 
   return (
     <div>
       <SearchBar onSearch={handleSearch} />
-      {error && <ErrorMessage />}
+      {error && <ErrorMessage message={error}/>}
       <Toaster position="bottom-center" />
 
-      {images.length > 0 && (
+      {length > 0 && (
         <ImageGallery images={images} onOpenModal={handleOpenModal} />
       )}
       <div
@@ -92,6 +94,107 @@ export default function App() {
           isOpen={modalIsOpen}
           onClose={handleCloseModal}
           content={modalContent}
+        />
+      )}
+    </div>
+  );
+} */
+
+import './App.css';
+import SearchBar from './SearchBar/SearchBar';
+import { useEffect, useState } from 'react';
+import ImageGallery from './ImageGallery/ImageGallery';
+import { fetchImg } from '../images-api';
+import toast, { Toaster } from 'react-hot-toast';
+
+import ImageModal from './ImageModal/ImageModal';
+import LoadMoreBtn from './LoadMoreBtn/LoadMoreBtn';
+import Loader from './Loader/Loader';
+import ErrorMessage from './ErrorMessage/ErrorMessage';
+import { Image } from "../Types";
+
+export default function App() {
+  const [images, setImages] = useState<Image[] | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState<number>(1);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<Image | null>(null);
+
+  useEffect(() => {
+    if (searchQuery === '') {
+      return;
+    }
+
+    async function getImg() {
+      try {
+        setLoading(true);
+        setError(null); // Change to null instead of false
+
+        const fetchedImg = await fetchImg(searchQuery, page);
+        setImages((prevImages: Image[] | null )=> {
+          return [...(prevImages || []), ...fetchedImg]; // Added null check
+        });
+        toast.success('Successfully');
+      } catch (error) {
+        setError('An error occurred while fetching images.'); // Set error message
+      } finally {
+        setLoading(false);
+      }
+    }
+    getImg();
+  }, [searchQuery, page]);
+
+  const handleSearch = (newQuery: string) : void => {
+    setSearchQuery(newQuery);
+    setPage(1);
+    setImages([]);
+  };
+
+  const handleLoadMore = () : void => {
+    setPage(page + 1);
+  };
+
+  const handleOpenModal = (value: Image) => {
+    setModalIsOpen(true);
+    setModalContent(value);
+  };
+
+  const handleCloseModal = () : void => {
+    setModalIsOpen(false);
+  };
+
+  return (
+    <div>
+      <SearchBar onSearch={handleSearch} />
+      {error && <ErrorMessage message={error} />} {/* Pass error message to ErrorMessage component */}
+      <Toaster position="bottom-center" />
+
+      {images !== null && images.length > 0 && ( 
+        <ImageGallery images={images as Image[]} onOpenModal={handleOpenModal} />
+      )}
+      <div
+        style={{
+          position: 'fixed',
+          top: '10',
+          left: '0',
+          right: '0',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {loading && <Loader />}
+      </div>
+
+      {images !== null && images.length > 0 && <LoadMoreBtn onClick={handleLoadMore} />} {/* Check if images is not null before accessing its length */}
+
+      {modalContent !== null && (
+        <ImageModal
+          onOpenModal={modalIsOpen}
+          onCloseModal={handleCloseModal}
+          image={modalContent}
         />
       )}
     </div>
