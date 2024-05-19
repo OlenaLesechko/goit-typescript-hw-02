@@ -1,14 +1,21 @@
 import css from './ImageCard.module.css';
+import { FC } from "react";
+import { Image } from "../../Types";
+interface ImageCardProps {
+    image: Image;
+    onOpenModal: (photo: Image) => void;
+}
 
-export default function ImageCard({ image, onOpenModal }) {
+const ImageCard: FC<ImageCardProps> = ({ image, onOpenModal }) => {
+    const { urls, description } = image;
     return (
         <ul>
         <li>
             {/* <div onClick={() => onOpenModal(image)}> */}
             <img
             className={css.img}
-            src={image.urls.small}
-            alt={image.urls.description}
+            src={urls.small}
+            alt={description}
             onClick={() => onOpenModal(image)}
             />
             {/* </div> */}
@@ -16,3 +23,4 @@ export default function ImageCard({ image, onOpenModal }) {
         </ul>
     );
 }
+export default ImageCard;

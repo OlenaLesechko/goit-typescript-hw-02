@@ -3,6 +3,11 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { FiSearch } from 'react-icons/fi';
 import toast from 'react-hot-toast';
+import { FC } from "react";
+
+interface SearchBarProps {
+    onSearch: (searchQuery: string) => void;
+}
 
 const searchBarSchema = Yup.object().shape({
     query: Yup.string()
@@ -11,8 +16,9 @@ const searchBarSchema = Yup.object().shape({
         .required('Required!'),
 });
 
-export default function SearchBar({ onSearch }) {
-    const notify = message => toast.error(message);
+const SearchBar: FC<SearchBarProps> = ({ onSearch }) => {
+
+    const notify = (message: string): void => toast.error(message);
 
     return (
         <header className={css.header}>
@@ -47,3 +53,5 @@ export default function SearchBar({ onSearch }) {
         </header>
     );
 }
+
+export default SearchBar;
