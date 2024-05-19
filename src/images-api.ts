@@ -1,9 +1,9 @@
 import axios, { AxiosResponse } from 'axios';
-import { Image, ServerResponse } from "./Types";
+import { Image } from "./Types";
 axios.defaults.baseURL = 'https://api.unsplash.com/';
 
 interface UnsplashResponse {
-    images: Image[];
+    results: Image[];
     total: number;
     total_pages: number;
 }
@@ -18,5 +18,5 @@ export const fetchImg = async (searchQuery: string, page = 1): Promise<Image[]> 
         },
     });
 
-    return response.data.images;
+    return response.data.results;
 };

@@ -10,7 +10,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
     width: calc((100% - 48px) / 4);
     object-fit: cover;
     overflow: hidden;
